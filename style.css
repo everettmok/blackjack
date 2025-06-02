@@ -1,0 +1,52 @@
+body {
+  padding: 25px;
+  font-family: "Verdana";
+}
+
+.player {
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.card {
+  color: blue;
+  padding: 45px 30px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+  display: none;
+  margin-right: 10px;
+}
+
+#myButtons {
+  display: none;
+  font-size : 25px;
+}
+
+#Title {
+  font-size: 40px;
+  font-family: "Georgia", Serif;
+  color: red;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+#WinLossMessage {
+  margin-top: 10px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#dealersCardTitle {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#playersCardTitle {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
