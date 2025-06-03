@@ -20,7 +20,16 @@ body {
 
 #myButtons {
   display: none;
-  font-size : 25px;
+  font-size: 25px;
+}
+
+#Start {
+  font-size: 25px;
+}
+
+#Restart {
+  display: none;
+  font-size: 25px;
 }
 
 #Title {
