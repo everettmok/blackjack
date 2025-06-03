@@ -12,8 +12,26 @@ let secondCardDiv;
 const playersTitleCards = document.getElementById("playersCardTitle");
 const dealersTitleCards = document.getElementById("dealersCardTitle");
 const myButtons = document.getElementById("myButtons");
+const startButton = document.getElementById("Start");
+const restartButton = document.getElementById("Restart");
 const stayButton = document.getElementById("Stay");
 const hitButton = document.getElementById("Hit");
+
+if (startButton) {
+  startButton.addEventListener("click", function (event) {
+    if (playerActive === false && roundOver === true) {
+    startGame()
+    }
+  }
+}
+
+if (restartButton) {
+  restartButton.addEventListener("click", function (event) {
+    if (roundOver === true) {
+      startGame()
+    }
+  }
+}
 
 if (stayButton) {
   stayButton.addEventListener("click", function (event) {
@@ -43,16 +61,16 @@ if (hitButton) {
       addCard(playerDiv, newCard.name);
 
       if (totalValue > 21) {
-        displayMessage.innerHTML = "Press R to restart the game";
+        displayMessage.innerHTML = "<strong>Press R</strong> to restart the game";
         WinLossMessage.innerHTML = "You Busted :|";
         playerActive = false;
         roundOver = true;
       } else if (totalValue === 21) {
         Result1.innerHTML = "<strong>You Got 21!</strong>";
-      }
-    }
-  });
-}
+        }
+     }
+   });
+ }
 
 const dealerDiv = document.getElementById("dealer");
 const playerDiv = document.getElementById("player");
@@ -209,10 +227,10 @@ function getDealerResults() {
       WinLossMessage.innerHTML = "You Won!";
     } else if (dealersCardValue >= 17) {
       outcomeChecker();
-    } else if (dealersCardValue === 21) {
+      } else if (dealersCardValue === 21) {
       displayMessage.innerHTML = "<strong>Press R</strong> to restart the game";
       WinLossMessage.innerHTML = "You Won!";
-    }
+        }
 
     roundOver = true;
   }
@@ -245,7 +263,7 @@ document.addEventListener("keydown", (event) => { if (event.key === "h" && playe
       roundOver = true;
     } else if (totalValue === 21) {
       Result1.innerHTML = "<strong>You got 21!</strong>";
-    }
+      }
   }
 
   if (event.key === "s" && playerActive === true && !roundOver) {
@@ -281,18 +299,18 @@ function outcomeChecker() {
           dealersCards.length > 2) {
           WinLossMessage.innerHTML = "You Tied.";
         } else if (playersCards.length > dealersCards.length) {
-          WinLossMessage.innerHTML = "You lost :|"
-        } else if (playersCards.length < dealersCards.length) {
-          WinLossMessage.innerHTML = "You Won!";
-        }
+            WinLossMessage.innerHTML = "You lost :|"
+          } else if (playersCards.length < dealersCards.length) {
+            WinLossMessage.innerHTML = "You Won!";
+            }
       } else {
         WinLossMessage.innerHTML = "You Tied.";
-      }
-  } else if (totalValue > dealersCardValue) {
-    DealersTotalValue.innerHTML = "<strong>The dealer</strong> ended with a value of " + dealersCardValue;
-    WinLossMessage.innerHTML = "You Won!";
-  } else if (totalValue < dealersCardValue) {
-    DealersTotalValue.innerHTML = "<strong>The dealer</strong> ended with a value of " + dealersCardValue;
-    WinLossMessage.innerHTML = "You lost :|";
-  }
+        }
+     } else if (totalValue > dealersCardValue) {
+         DealersTotalValue.innerHTML = "<strong>The dealer</strong> ended with a value of " + dealersCardValue;
+         WinLossMessage.innerHTML = "You Won!";
+       } else if (totalValue < dealersCardValue) {
+           DealersTotalValue.innerHTML = "<strong>The dealer</strong> ended with a value of " + dealersCardValue;
+           WinLossMessage.innerHTML = "You lost :|";
+         }
 }
