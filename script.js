@@ -20,17 +20,17 @@ const hitButton = document.getElementById("Hit");
 if (startButton) {
   startButton.addEventListener("click", function (event) {
     if (playerActive === false && roundOver === true) {
-    startGame()
+      startGame();
     }
-  }
+  });
 }
 
 if (restartButton) {
   restartButton.addEventListener("click", function (event) {
     if (roundOver === true) {
-      startGame()
+      startGame();
     }
-  }
+  });
 }
 
 if (stayButton) {
@@ -61,7 +61,7 @@ if (hitButton) {
       addCard(playerDiv, newCard.name);
 
       if (totalValue > 21) {
-        displayMessage.innerHTML = "<strong>Press R</strong> to restart the game";
+        myButtons.style.display = "none";
         WinLossMessage.innerHTML = "You Busted :|";
         playerActive = false;
         roundOver = true;
@@ -85,8 +85,6 @@ const Total = document.getElementById("Total");
 const WinLossMessage = document.getElementById("WinLossMessage");
 const DealersMessage1 = document.getElementById("DealersMessage1");
 const DealersMessage2 = document.getElementById("DealersMessage2");
-
-displayMessage.innerHTML = "Press the  <strong>Key P</strong> to Start";
 
 function createDeck() {
   const cards = [];
@@ -155,6 +153,13 @@ function startGame() {
 
   if (totalValue === 21) {
     Result1.innerHTML = "You got a <strong>Blackjack</strong>!";
+  } else if (dealersFirstCard.value + dealersSecondCard.value === 21) {
+    WinLossMessage.innerHTML = "You Lost :|";
+    DealersTotalValue.innerHTML = "The dealer got <strong>Blackjack</strong>."
+    secondCardDiv.innerHTML = dealersSecondCard.name;
+    myButtons.style.display = "none";
+    playerActive = false;
+    roundOver = true;
   }
 }
 
@@ -207,6 +212,7 @@ function dealerDrawCard() {
 function getDealerResults() {
   if (!playerActive && !roundOver) {
     restartButton.style.display = "block";
+    myButtons.style.display = "none";
     playerActive = false;
     dealersCards.push(dealersFirstCard, dealersSecondCard);
 
@@ -225,13 +231,11 @@ function getDealerResults() {
     }
 
     if (dealersCardValue > 21) {
-      displayMessage.innerHTML = "<strong>Press R</strong> to restart the game";
       DealersMessage2.innerHTML = "<strong>The dealer busted!</strong>";
       WinLossMessage.innerHTML = "You Won!";
     } else if (dealersCardValue >= 17) {
       outcomeChecker();
       } else if (dealersCardValue === 21) {
-      displayMessage.innerHTML = "<strong>Press R</strong> to restart the game";
       WinLossMessage.innerHTML = "You Won!";
         }
 
@@ -260,7 +264,6 @@ document.addEventListener("keydown", (event) => { if (event.key === "h" && playe
     addCard(playerDiv, newCard.name);
 
     if (totalValue > 21) {
-      displayMessage.innerHTML = "<strong>Press R</strong> to restart the game";
       WinLossMessage.innerHTML = "<strong>You busted</strong> :|";
       playerActive = false;
       roundOver = true;
@@ -289,7 +292,6 @@ document.addEventListener("keydown", (event) => { if (event.key === "h" && playe
 });
 
 function outcomeChecker() {
-  displayMessage.innerHTML = "<strong>Press R</strong> to restart the game";
   if (dealersCardValue > 21) {
     DealersTotalValue.innerHTML = "<strong>The dealer</strong> ended with a value of " + dealersCardValue;
     DealersMessage2.innerHTML = "The <strong>dealer busted</strong>!";
