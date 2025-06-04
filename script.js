@@ -122,6 +122,8 @@ function createDeck() {
 
 function startGame() {
   myButtons.style.display = "block";
+  startButton.style.display = "none";
+  restartButton.style.display = "none";
   totalValue = 0;
   dealersCardValue = 0;
   playersCards = [];
@@ -204,6 +206,7 @@ function dealerDrawCard() {
 
 function getDealerResults() {
   if (!playerActive && !roundOver) {
+    restartButton.style.display = "block";
     playerActive = false;
     dealersCards.push(dealersFirstCard, dealersSecondCard);
 
