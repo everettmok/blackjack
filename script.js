@@ -160,6 +160,7 @@ function startGame() {
     myButtons.style.display = "none";
     playerActive = false;
     roundOver = true;
+    restartButton.style.display = "block";
   }
 }
 
@@ -210,6 +211,7 @@ function dealerDrawCard() {
 }
 
 function getDealerResults() {
+  restartButton.style.display = "block";
   if (!playerActive && !roundOver) {
     restartButton.style.display = "block";
     myButtons.style.display = "none";
@@ -267,6 +269,7 @@ document.addEventListener("keydown", (event) => { if (event.key === "h" && playe
       WinLossMessage.innerHTML = "<strong>You busted</strong> :|";
       playerActive = false;
       roundOver = true;
+      restartButton.style.display = "block";
     } else if (totalValue === 21) {
       Result1.innerHTML = "<strong>You got 21!</strong>";
       }
@@ -292,6 +295,7 @@ document.addEventListener("keydown", (event) => { if (event.key === "h" && playe
 });
 
 function outcomeChecker() {
+  restartButton.style.display = "block";
   if (dealersCardValue > 21) {
     DealersTotalValue.innerHTML = "<strong>The dealer</strong> ended with a value of " + dealersCardValue;
     DealersMessage2.innerHTML = "The <strong>dealer busted</strong>!";
