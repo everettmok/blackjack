@@ -65,6 +65,7 @@ if (hitButton) {
         WinLossMessage.innerHTML = "You Busted :|";
         playerActive = false;
         roundOver = true;
+        restartButton.style.display = "block";
       } else if (totalValue === 21) {
         Result1.innerHTML = "<strong>You Got 21!</strong>";
         }
@@ -269,6 +270,7 @@ document.addEventListener("keydown", (event) => { if (event.key === "h" && playe
       WinLossMessage.innerHTML = "<strong>You busted</strong> :|";
       playerActive = false;
       roundOver = true;
+      myButtons.style.display = "none";
       restartButton.style.display = "block";
     } else if (totalValue === 21) {
       Result1.innerHTML = "<strong>You got 21!</strong>";
