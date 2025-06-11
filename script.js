@@ -1,4 +1,4 @@
-const cards = createDeck();
+let cards = createDeck();
 
 let totalValue = 0;
 let dealersCardValue = 0;
@@ -9,6 +9,7 @@ let roundOver = true;
 let playersCards = [];
 let dealersCards = [];
 let secondCardDiv;
+
 const playersTitleCards = document.getElementById("playersCardTitle");
 const dealersTitleCards = document.getElementById("dealersCardTitle");
 const myButtons = document.getElementById("myButtons");
@@ -17,65 +18,8 @@ const restartButton = document.getElementById("Restart");
 const stayButton = document.getElementById("Stay");
 const hitButton = document.getElementById("Hit");
 
-if (startButton) {
-  startButton.addEventListener("click", function (event) {
-    if (playerActive === false && roundOver === true) {
-      startGame();
-    }
-  });
-}
-
-if (restartButton) {
-  restartButton.addEventListener("click", function (event) {
-    if (roundOver === true) {
-      startGame();
-    }
-  });
-}
-
-if (stayButton) {
-  stayButton.addEventListener("click", function (event) {
-    if (playerActive === true && !roundOver) {
-      displayMessage.innerHTML = "";
-      Result1.innerHTML = "";
-      DealersHand.innerHTML = "";
-      dealersCardTitle.innerHTML = "Dealer's Cards";
-      if (dealersSecondCard) {
-        secondCardDiv.innerHTML = dealersSecondCard.name;
-      }
-      playerActive = false;
-      getDealerResults();
-    }
-  });
-}
-
-if (hitButton) {
-  hitButton.addEventListener("click", function (event) {
-    if (playerActive && !roundOver) {
-      const newCard = getRandomCard();
-      playersCards.push(newCard);
-      totalValue += newCard.value;
-      totalValue = aceChecker(playersCards);
-      Total.innerHTML = "<strong>Your total</strong> is now " + totalValue;
-
-      addCard(playerDiv, newCard.name);
-
-      if (totalValue > 21) {
-        myButtons.style.display = "none";
-        WinLossMessage.innerHTML = "You Busted :|";
-        playerActive = false;
-        roundOver = true;
-        restartButton.style.display = "block";
-      } else if (totalValue === 21) {
-        Result1.innerHTML = "<strong>You Got 21!</strong>";
-        }
-     }
-   });
- }
-
 const dealerDiv = document.getElementById("dealer");
 const playerDiv = document.getElementById("player");
-
 const dealersCardTitle = document.getElementById("dealersCards");
 const playersCardTitle = document.getElementById("playersCards");
 const displayMessage = document.getElementById("displayMessage");
@@ -87,241 +31,177 @@ const WinLossMessage = document.getElementById("WinLossMessage");
 const DealersMessage1 = document.getElementById("DealersMessage1");
 const DealersMessage2 = document.getElementById("DealersMessage2");
 
+if (startButton) {
+  startButton.addEventListener("click", () => {
+    if (!playerActive && roundOver) startGame();
+  });
+}
+
+if (restartButton) {
+  restartButton.addEventListener("click", () => {
+    if (roundOver) startGame();
+  });
+}
+
+if (stayButton) {
+  stayButton.addEventListener("click", () => {
+    if (playerActive && !roundOver) {
+      endPlayerTurn();
+    }
+  });
+}
+
+if (hitButton) {
+  hitButton.addEventListener("click", () => {
+    if (playerActive && !roundOver) playerHit();
+  });
+}
+
 function createDeck() {
-  const cards = [];
-  const suites = ["&#9824", "&#9829", ]
+  const suits = ["\u2660", "\u2665", "\u2666", "\u2663"];
+  const values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+  const deck = [];
 
-  const numericCards = [
-    { name: "2", value: 2 },
-    { name: "3", value: 3 },
-    { name: "4", value: 4 },
-    { name: "5", value: 5 },
-    { name: "6", value: 6 },
-    { name: "7", value: 7 },
-    { name: "8", value: 8 },
-    { name: "9", value: 9 },
-    { name: "10", value: 10 },
-    { name: "J", value: 10 },
-    { name: "Q", value: 10 },
-    { name: "K", value: 10 },
-    { name: "A", value: 11 },
-  ];
-
-
-  for (let i = 0; i < suites.length; i++) {
-    for (const numericCard of numericCards) {
-      cards.push({
-        name: numericCard.name + suites[i],
-        value: numericCard.value
-      })
+  for (let suit of suits) {
+    for (let value of values) {
+      let cardValue = value === "A" ? 11 : ["J", "Q", "K"].includes(value) ? 10 : parseInt(value);
+      deck.push({
+        name: `${value}${suit}`,
+        value: cardValue,
+        color: ["\u2665", "\u2666"].includes(suit) ? "red" : "black"
+      });
     }
   }
-  return cards;
+
+  return deck.sort(() => Math.random() - 0.5); // shuffle
 }
 
 function startGame() {
+  cards = createDeck();
   myButtons.style.display = "block";
   startButton.style.display = "none";
   restartButton.style.display = "none";
+
   totalValue = 0;
   dealersCardValue = 0;
   playersCards = [];
   dealersCards = [];
-  playersTitleCards.innerHTML = "Your Cards"
-  dealersTitleCards.innerHTML = "Dealer's Cards"
-  dealerDiv.innerHTML = "";
+
   playerDiv.innerHTML = "";
+  dealerDiv.innerHTML = "";
+  playersTitleCards.innerHTML = "Your Cards";
+  dealersTitleCards.innerHTML = "Dealer's Cards";
   Result1.innerHTML = "";
   WinLossMessage.innerHTML = "";
   DealersMessage1.innerHTML = "";
   DealersMessage2.innerHTML = "";
 
-  getCards();
+  // Deal to player
+  const card1 = getRandomCard();
+  const card2 = getRandomCard();
+  playersCards.push(card1, card2);
+  addCard(playerDiv, card1);
+  addCard(playerDiv, card2);
+  totalValue = aceChecker(playersCards);
+  Total.innerHTML = `<strong>Your total</strong> is ${totalValue}`;
 
+  // Deal to dealer
   dealersFirstCard = getRandomCard();
   dealersSecondCard = getRandomCard();
-  addCard(dealerDiv, dealersFirstCard.name);
-  secondCardDiv = addCard(dealerDiv, "?");
-  dealersCardTitle.innerHTML = "Dealer's Card";
-  playersCardTitle.innerHTML = "Player's Cards";
-
-  displayMessage.innerHTML = "";
-  dealersCardValue += dealersFirstCard.value;
-  DealersTotalValue.innerHTML = "The <strong>dealer's total</strong> is now " + dealersCardValue;
+  dealersCards.push(dealersFirstCard, dealersSecondCard);
+  addCard(dealerDiv, dealersFirstCard);
+  secondCardDiv = addCard(dealerDiv, { name: "?", value: 0, color: "black" });
+  dealersCardValue = aceChecker([dealersFirstCard]);
+  DealersTotalValue.innerHTML = `The <strong>dealer's total</strong> is now ${dealersCardValue}`;
 
   playerActive = true;
   roundOver = false;
+}
 
-  if (totalValue === 21) {
-    Result1.innerHTML = "You got a <strong>Blackjack</strong>!";
-  } else if (dealersFirstCard.value + dealersSecondCard.value === 21) {
-    WinLossMessage.innerHTML = "You Lost :|";
-    DealersTotalValue.innerHTML = "The dealer got <strong>Blackjack</strong>."
-    secondCardDiv.innerHTML = dealersSecondCard.name;
+function getRandomCard() {
+  return cards.length ? cards.pop() : { name: "?", value: 0, color: "black" };
+}
+
+function addCard(parent, card) {
+  const div = document.createElement("div");
+  div.classList.add("card");
+  div.innerHTML = card.name;
+  div.style.color = card.color;
+  div.style.display = "inline-block";
+  parent.appendChild(div);
+  return div;
+}
+
+function aceChecker(hand) {
+  let total = hand.reduce((sum, card) => sum + card.value, 0);
+  let aceCount = hand.filter(card => card.name.startsWith("A")).length;
+  while (total > 21 && aceCount--) total -= 10;
+  return total;
+}
+
+function playerHit() {
+  const card = getRandomCard();
+  playersCards.push(card);
+  totalValue = aceChecker(playersCards);
+  addCard(playerDiv, card);
+  Total.innerHTML = `<strong>Your total</strong> is now ${totalValue}`;
+
+  if (totalValue > 21) {
+    WinLossMessage.innerHTML = "You Busted :|";
     myButtons.style.display = "none";
     playerActive = false;
     roundOver = true;
     restartButton.style.display = "block";
+  } else if (totalValue === 21) {
+    Result1.innerHTML = "<strong>You got 21!</strong>";
   }
 }
 
-function addCard(parentDiv, cardValue) {
-  const newCardDiv = document.createElement("div");
-  newCardDiv.classList.add('card');
-  newCardDiv.innerHTML = cardValue;
-  newCardDiv.style.display = "inline-block";
-  parentDiv.appendChild(newCardDiv);
-  return newCardDiv;
-}
-
-function getRandomCard() {
-  let generatedIndex = Math.floor(Math.random() * cards.length);
-  const originalCard = cards[generatedIndex];
-  return { name: originalCard.name, value: originalCard.value };
-}
-
-function aceChecker(hand) {
-  let adjustedTotal = 0;
-  let aceCount = 0;
-
-  for (const card of hand) {
-    adjustedTotal += card.value;
-  }
-
-  for (const card of hand) {
-    if (card.name.startsWith("A")) {
-      aceCount++;
-    }
-  }
-
-  while (adjustedTotal > 21 && aceCount > 0) {
-    adjustedTotal -= 10;
-    aceCount--;
-  }
-
-  return adjustedTotal;
+function endPlayerTurn() {
+  displayMessage.innerHTML = "";
+  Result1.innerHTML = "";
+  DealersHand.innerHTML = "";
+  dealersCardTitle.innerHTML = "Dealer's Cards";
+  secondCardDiv.innerHTML = dealersSecondCard.name;
+  playerActive = false;
+  getDealerResults();
 }
 
 function dealerDrawCard() {
-  const newCard = getRandomCard();
-  dealersCardValue += newCard.value;
-  dealersCards.push(newCard);
+  const card = getRandomCard();
+  dealersCards.push(card);
   dealersCardValue = aceChecker(dealersCards);
-  addCard(dealerDiv, newCard.name);
-  DealersTotalValue.innerHTML = "The <strong>dealer's total</strong> is now " + dealersCardValue;
+  addCard(dealerDiv, card);
+  DealersTotalValue.innerHTML = `The <strong>dealer's total</strong> is now ${dealersCardValue}`;
 }
 
 function getDealerResults() {
   restartButton.style.display = "block";
-  if (!playerActive && !roundOver) {
-    restartButton.style.display = "block";
-    myButtons.style.display = "none";
-    playerActive = false;
-    dealersCards.push(dealersFirstCard, dealersSecondCard);
-
-    dealersCardValue = 0;
-    for (const card of dealersCards) {
-      dealersCardValue += card.value;
-    }
-    dealersCardValue = aceChecker(dealersCards);
-
-    if (dealersSecondCard) {
-      secondCardDiv.innerHTML = dealersSecondCard.name;
-    }
-    DealersTotalValue.innerHTML = "The <strong>dealer's total</strong> is now " + dealersCardValue;
-    while (dealersCardValue <= 16) {
-      dealerDrawCard();
-    }
-
-    if (dealersCardValue > 21) {
-      DealersMessage2.innerHTML = "<strong>The dealer busted!</strong>";
-      WinLossMessage.innerHTML = "You Won!";
-    } else if (dealersCardValue >= 17) {
-      outcomeChecker();
-      } else if (dealersCardValue === 21) {
-      WinLossMessage.innerHTML = "You Won!";
-        }
-
-    roundOver = true;
+  myButtons.style.display = "none";
+  while (dealersCardValue <= 16) {
+    dealerDrawCard();
   }
+  outcomeChecker();
+  roundOver = true;
 }
-
-function getCards() {
-  const card1 = getRandomCard();
-  const card2 = getRandomCard();
-  playersCards.push(card1, card2);
-  totalValue = card1.value + card2.value;
-  totalValue = aceChecker(playersCards);
-  addCard(playerDiv, card1.name);
-  addCard(playerDiv, card2.name);
-  Total.innerHTML = "<strong>Your total</strong> is " + totalValue;
-}
-
-document.addEventListener("keydown", (event) => { if (event.key === "h" && playerActive && !roundOver) {
-    const newCard = getRandomCard();
-    playersCards.push(newCard);
-    totalValue += newCard.value;
-    totalValue = aceChecker(playersCards);
-    Total.innerHTML = "<strong>Your total</strong> is now " + totalValue;
-
-    addCard(playerDiv, newCard.name);
-
-    if (totalValue > 21) {
-      WinLossMessage.innerHTML = "<strong>You busted</strong> :|";
-      playerActive = false;
-      roundOver = true;
-      myButtons.style.display = "none";
-      restartButton.style.display = "block";
-    } else if (totalValue === 21) {
-      Result1.innerHTML = "<strong>You got 21!</strong>";
-      }
-  }
-
-  if (event.key === "s" && playerActive === true && !roundOver) {
-    displayMessage.innerHTML = "";
-    Result1.innerHTML = "";
-    DealersHand.innerHTML = ""
-    dealersCardTitle.innerHTML = "Dealer's Cards";
-    secondCardDiv.innerHTML = dealersSecondCard.name;
-    playerActive = false;
-    getDealerResults();
-  }
-
-  if (event.key === "r" && roundOver === true) {
-    startGame();
-  }
-
-  if (event.key === "p" && (!playerActive || roundOver)) {
-    startGame();
-  }
-});
 
 function outcomeChecker() {
-  restartButton.style.display = "block";
   if (dealersCardValue > 21) {
-    DealersTotalValue.innerHTML = "<strong>The dealer</strong> ended with a value of " + dealersCardValue;
-    DealersMessage2.innerHTML = "The <strong>dealer busted</strong>!";
-    WinLossMessage.innerHTML = "You Won!";
+    WinLossMessage.innerHTML = "You Won! Dealer busted.";
   } else if (totalValue > 21) {
     WinLossMessage.innerHTML = "You Lost :|";
-  } else if (totalValue === dealersCardValue) {
-      if (totalValue === 21 && dealersCardValue === 21) {
-        if (playersCards.length > 2 &&
-          dealersCards.length > 2) {
-          WinLossMessage.innerHTML = "You Tied.";
-        } else if (playersCards.length > dealersCards.length) {
-            WinLossMessage.innerHTML = "You lost :|"
-          } else if (playersCards.length < dealersCards.length) {
-            WinLossMessage.innerHTML = "You Won!";
-            }
-      } else {
-        WinLossMessage.innerHTML = "You Tied.";
-        }
-     } else if (totalValue > dealersCardValue) {
-         DealersTotalValue.innerHTML = "<strong>The dealer</strong> ended with a value of " + dealersCardValue;
-         WinLossMessage.innerHTML = "You Won!";
-       } else if (totalValue < dealersCardValue) {
-           DealersTotalValue.innerHTML = "<strong>The dealer</strong> ended with a value of " + dealersCardValue;
-           WinLossMessage.innerHTML = "You lost :|";
-         }
+  } else if (totalValue > dealersCardValue) {
+    WinLossMessage.innerHTML = "You Won!";
+  } else if (totalValue < dealersCardValue) {
+    WinLossMessage.innerHTML = "You Lost :|";
+  } else {
+    WinLossMessage.innerHTML = "You Tied.";
+  }
 }
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "h" && playerActive && !roundOver) playerHit();
+  if (e.key === "s" && playerActive && !roundOver) endPlayerTurn();
+  if (e.key === "r" && roundOver) startGame();
+  if (e.key === "p" && (!playerActive || roundOver)) startGame();
+});
