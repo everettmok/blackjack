@@ -62,3 +62,11 @@ body {
   font-size: 20px;
   font-weight: bold;
 }
+
+#backround {
+  background-image: url('depositphotos_49179363-stock-photo-casino-green-table-background.jpg');
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
