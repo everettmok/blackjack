@@ -145,9 +145,9 @@ function startGame() {
   playerActive = true;
   roundOver = false;
 
-  let randomNumber = Math.round(Math.random() * 2) + 1;
+  let randomNumber = Math.round(Math.random() * 1);
   const title = document.getElementById("Title")
-  if (randomNumber === 1) {
+  if (randomNumber === 0) {
   title.style.color = "red"
   } else {
       title.style.color = "black"
