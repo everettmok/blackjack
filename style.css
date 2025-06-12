@@ -37,7 +37,7 @@ body {
 
 #Title {
   background: URL("Blackjack_Picture.avif");
-  background-size: cover;
+  background-size: 100% 100%;
   font-size: 40px;
   font-family: "Georgia", Serif;
   color: red;
