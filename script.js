@@ -9,6 +9,10 @@ let roundOver = true;
 let playersCards = [];
 let dealersCards = [];
 let secondCardDiv;
+const background = document.getElementById("background")
+let screen = background.getContext("2d");
+background.width = window.innerWidth;
+background.height = window.innerHeight;
 const playersTitleCards = document.getElementById("playersCardTitle");
 const dealersTitleCards = document.getElementById("dealersCardTitle");
 const myButtons = document.getElementById("myButtons");
