@@ -283,10 +283,6 @@ document.addEventListener("keydown", (event) => {
     getDealerResults();
   }
 
-  if (event.key === "r" && roundOver) {
-    startGame();
-  }
-
   if (event.key === "p" && (!playerActive || roundOver)) {
     startGame();
   }
